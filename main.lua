@@ -82,4 +82,8 @@ function love.keypressed(key)
   print(key)
   
 end
+
+function love.mousepresses(x, y, button)
+  current_scene.mousepressed(x, y, button)
+end
   
