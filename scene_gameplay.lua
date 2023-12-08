@@ -11,4 +11,8 @@ function Scene.draw()
 end
 
 
+function Scene.keypressed(key)
+end
+
+
 return Scene

@@ -10,8 +10,7 @@ if arg[#arg] == "-debug" then require("mobdebug").start() end
 textures = love.graphics.newImage("images/tiles.png")
 
 local scene = require "scene_menu"
-local scene_editor = require "scene_editor"
-local scene_gameplay = require "scene_gameplay"
+
 
 
 local current_scene 
@@ -74,37 +73,12 @@ function love.draw()
     current_scene:draw()
 end
 
--- for l = 1, MAPSIZE do 
-  --   for c = 1, MAPSIZE do
-  --     local id = currentLevel[l][c]
-  --     love.graphics.draw(textures, quads[id], ((c-1) * TILESIZE) + ((largeur_ecran - (MAPSIZE * TILESIZE)) / 2), (l-1) * TILESIZE)
-  --   end 
-  -- end
-
-
---[[
-    local x = 0
-    local y = 0
-
-    for n = 1, #quads do 
-    love.graphics.setColor(0,0,0,1)
-    love.graphics.print(n, x + 5, y + 15)
-    love.graphics.setColor(1,1,1,1)
-
-
-      love.graphics.draw(textures, quads[n], x + 5, y + 30 )
-      x = x + 50
-      if x >= largeur_ecran - 50 then 
-        x = 0
-        y = y + 60
-      end
-      
-    end
-    ]]
 function love.keypressed(key)
-  if key == "escape" then
+  current_scene.keypressed(key)
+  if key == "f4" then
     love.event.quit()
   end
+  
   print(key)
   
 end
