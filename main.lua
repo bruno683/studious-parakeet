@@ -10,7 +10,11 @@ if arg[#arg] == "-debug" then require("mobdebug").start() end
 textures = love.graphics.newImage("images/tiles.png")
 
 local scene = require "scene_menu"
+local scene_editor = require "scene_editor"
+local scene_gameplay = require "scene_gameplay"
 
+
+local current_scene 
 TILESIZE = 32
 textureWidth = textures:getWidth()
 textureHeight = textures:getHeight()
@@ -37,9 +41,11 @@ end
 
 local currentLevel = nil -- le niveau courant vide pour l'instant
 function love.load()
- 
+  
   largeur_ecran = love.graphics.getWidth()
   hauteur_ecran = love.graphics.getHeight()
+
+  current_scene = scene
   -- scene:load()
   local n = 1
   local tileWidth = textureWidth / 16
@@ -64,14 +70,18 @@ function love.draw()
     
     -- love.graphics.draw(textures,quads[371], 10, 10)
     -- love.graphics.scale(0.9,0.9)
-    for l = 1, MAPSIZE do 
-      for c = 1, MAPSIZE do
-        local id = currentLevel[l][c]
-        love.graphics.draw(textures, quads[id], ((c-1) * TILESIZE) + ((largeur_ecran - (MAPSIZE * TILESIZE)) / 2), (l-1) * TILESIZE)
-      end 
-    end
-    scene:draw()
+   
+    current_scene:draw()
 end
+
+-- for l = 1, MAPSIZE do 
+  --   for c = 1, MAPSIZE do
+  --     local id = currentLevel[l][c]
+  --     love.graphics.draw(textures, quads[id], ((c-1) * TILESIZE) + ((largeur_ecran - (MAPSIZE * TILESIZE)) / 2), (l-1) * TILESIZE)
+  --   end 
+  -- end
+
+
 --[[
     local x = 0
     local y = 0
