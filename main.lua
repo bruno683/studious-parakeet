@@ -8,6 +8,9 @@ love.graphics.setDefaultFilter("nearest", "nearest")
 -- Cette ligne permet de déboguer pas à pas dans ZeroBraneStudio
 if arg[#arg] == "-debug" then require("mobdebug").start() end
 textures = love.graphics.newImage("images/tiles.png")
+
+local scene = require "scene_menu"
+
 TILESIZE = 32
 textureWidth = textures:getWidth()
 textureHeight = textures:getHeight()
@@ -37,11 +40,11 @@ function love.load()
  
   largeur_ecran = love.graphics.getWidth()
   hauteur_ecran = love.graphics.getHeight()
-  
+  -- scene:load()
   local n = 1
   local tileWidth = textureWidth / 16
   local tileHeight = textureHeight / 32
-  print(tilewidth, tileHeight)
+  
   for l = 1, 32 do 
     for c = 1, 16 do
         quads[n] = love.graphics.newQuad( (c-1) * tileWidth, (l-1) * tileWidth, TILESIZE, TILESIZE, textureWidth, textureHeight)
@@ -54,7 +57,7 @@ function love.load()
 end
 
 function love.update(dt)
-
+  scene:update(dt)
 end
 
 function love.draw()
@@ -67,6 +70,7 @@ function love.draw()
         love.graphics.draw(textures, quads[id], ((c-1) * TILESIZE) + ((largeur_ecran - (MAPSIZE * TILESIZE)) / 2), (l-1) * TILESIZE)
       end 
     end
+    scene:draw()
 end
 --[[
     local x = 0
