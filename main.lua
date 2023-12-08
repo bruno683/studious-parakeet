@@ -75,7 +75,7 @@ end
 
 function love.keypressed(key)
   current_scene.keypressed(key)
-  if key == "f4" then
+  if key == "q" or key == "Q" then
     love.event.quit()
   end
   

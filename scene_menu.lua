@@ -23,6 +23,8 @@ function Scene.draw()
         love.graphics.print("[E]diteur de scene", x, y)
         y = y + 20
         love.graphics.print("[G]ameplay", x, y)
+        y = y + 20
+        love.graphics.print("[Q]uitter", x, y)
     end
 
     
@@ -33,9 +35,9 @@ function Scene.keypressed(key)
     end
      
 
-    if key == "e" then 
+    if key == "e" or key == "E" then 
         current_scene = scene_editor 
-    elseif key == "g" then 
+    elseif key == "g" or key == "G" then 
         current_scene = scene_gameplay 
     elseif key == "escape" then 
         current_scene = nil
