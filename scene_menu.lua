@@ -5,6 +5,10 @@ local current_scene = nil
 local scene_editor = require "scene_editor"
 local scene_gameplay = require "scene_gameplay"
 
+
+function Scene.load()
+end
+
 function Scene.update(dt)
     if current_scene ~= nil then 
         current_scene.update(dt)
@@ -37,8 +41,10 @@ function Scene.keypressed(key)
 
     if key == "e" or key == "E" then 
         current_scene = scene_editor 
+        current_scene.load()
     elseif key == "g" or key == "G" then 
         current_scene = scene_gameplay 
+        current_scene.load()
     elseif key == "escape" then 
         current_scene = nil
     end
@@ -46,7 +52,7 @@ function Scene.keypressed(key)
 end
 
 function Scene.mousepressed(x, y, button)
-    
+    current_scene.mousepressed(x, y, button)
 end
 
 return Scene

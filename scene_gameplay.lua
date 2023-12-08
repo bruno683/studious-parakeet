@@ -1,6 +1,7 @@
 local Scene = {}
 
-
+function Scene.load()
+end
 
 function Scene.update(dt)
 end
