@@ -35,7 +35,7 @@ end
 
 
 function Scene.draw()
-    
+
     for l= 1, map.MAPSIZE do 
         for c = 1, map.MAPSIZE do 
             local x = (l-1) * map.TILESIZE
