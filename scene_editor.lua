@@ -49,7 +49,7 @@ function Scene.draw()
         for c = 1, map.MAPSIZE do 
             local x = (l-1) * map.TILESIZE
             local y = (c-1) * map.TILESIZE
-            love.graphics.rectangle("line", x, y, map.TILESIZE, map.TILESIZE)
+            love.graphics.draw(map.imgTile, map.quads[33] , x, y)
             local id = map.Grid[l][c]
             if id > 0 then 
                 love.graphics.draw(map.imgTile, map.quads[id], x, y )

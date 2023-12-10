@@ -8,7 +8,7 @@ local blinkTimer = 0
 local blinkDuration = 0.2
 local blinkFlag = false
 TileSelector.tiles = {
-    17,18,19,20,21,22,23,24,33,34,58,59,60,305,306,307,308,321,322,323,324,
+    17,18,19,20,21,22,23,24,34,58,59,60,305,306,307,308,321,322,323,324,
 }
 TileSelector.index = 1
 TileSelector.tile = TileSelector.tiles[TileSelector.index]
