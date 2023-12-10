@@ -11,14 +11,14 @@ end
 
 function changeTile(x, y, tile)
     local tileX = math.floor(x / map.TILESIZE) + 1
-    print("colonne", tileX)
+    -- print("colonne", tileX)
     local tileY = math.floor(y / map.TILESIZE) + 1
-    print("ligne", tileY)
+    -- print("ligne", tileY)
     if tileX >= 1 and tileX <= map.MAPSIZE and tileY >= 1 and tileY <= map.MAPSIZE  then
         -- affichage de la tuile de notre choix par action du click
         map.Grid[tileX][tileY] = tile
-    else
-        print("Erreur! click en dehors de la grille")
+    -- else
+    --     print("Erreur! click en dehors de la grille")
     end
 end
 
@@ -54,6 +54,10 @@ function Scene.keypressed(key)
 end
 
 function Scene.mousepressed(x, y, button)
+    if button == "l" then
+        print(x)
+        print(y)
+     end
 end
 
 
