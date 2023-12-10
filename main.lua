@@ -66,10 +66,6 @@ function love.update(dt)
 end
 
 function love.draw()
-    
-    -- love.graphics.draw(textures,quads[371], 10, 10)
-    -- love.graphics.scale(0.9,0.9)
-   
     current_scene:draw()
 end
 
