@@ -17,22 +17,20 @@ function TileSelector.setPosition(pX, pY)
     
 end
 
-function TileSelector.click(pX, pY)
+function TileSelector.Click(pX, pY)
     -- est-ce que ce clic me concerne ?
-    if pX < TileSelector.x then 
-        return 
-    end
+    -- if pX < TileSelector.x then 
+    --     return 
+    -- end
 
-    local x = pX - TileSelector.x 
+    -- local x = pX - TileSelector.x 
+    print("mouse position x ")
     
-    local y = pY - TileSelector.marginY
-    
-
-    
-    local tileX = math.floor(x / Map.TILESIZE) + 1
-    print("Click X selector", tileX)
-    local tileY = math.floor(y / Map.TILESIZE) + 1
-    print("Click Y selector", tileY)
+    -- local y = pY - TileSelector.marginY
+    -- local tileX = math.floor(x / Map.TILESIZE) + 1
+    -- print("Click X selector", tileX)
+    -- local tileY = math.floor(y / Map.TILESIZE) + 1
+    -- print("Click Y selector", tileY)
 end
 
 function TileSelector.update(dt)
