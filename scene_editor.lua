@@ -35,7 +35,7 @@ end
 
 
 function Scene.draw()
-    -- love.graphics.print("Scene editeur")
+    
     for l= 1, map.MAPSIZE do 
         for c = 1, map.MAPSIZE do 
             local x = (l-1) * map.TILESIZE
@@ -45,7 +45,7 @@ function Scene.draw()
             if id > 0 then 
                 love.graphics.draw(map.imgTile, map.quads[id], x, y )
             end
-            -- love.graphics.print(map.Grid[l][c], x + 2, y + 2 )
+
         end
     end
 end
