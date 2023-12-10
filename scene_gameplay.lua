@@ -1,4 +1,8 @@
 local Scene = {}
+-- require
+
+-- local scene_manager = require "scene_manager"
+
 
 function Scene.load()
 end
@@ -13,6 +17,9 @@ end
 
 
 function Scene.keypressed(key)
+    if key == "escape" then 
+        scene_manager.changeScene("menu")
+    end
 end
 
 function Scene.mousepressed(x, y, button)

@@ -4,31 +4,32 @@ love.graphics.setDefaultFilter("nearest", "nearest")
 textures = love.graphics.newImage("images/tiles.png")
 
 -- requires
-local scene = require "scene_menu"
-local scene_manager = require "scene_manager"
- 
+
+scene_manager = require "scene_manager"
+
+
 function love.load()
 
   scene_manager.changeScene(scene)
-  -- scene_manager.current_scene.load()
+  scene_manager.current_scene.load()
 
 end
 
 function love.update(dt)
 
-  scene_manager.current_scene:update(dt)
+  scene_manager.update(dt)
 
 end
 
 function love.draw()
 
-    scene_manager.current_scene:draw()
+    scene_manager.draw()
 
 end
 
 function love.keypressed(key)
 
-  scene_manager.current_scene.keypressed(key)
+  scene_manager.keypressed(key)
   if key == "q" or key == "Q" then
       love.event.quit()
   end
@@ -36,7 +37,9 @@ function love.keypressed(key)
 end
 
 function love.mousepressed(x, y, button)
-  scene_manager.current_scene.mousepressed(x, y, button)
+
+  scene_manager.mousepressed(x, y, button)
+  
 end
 
   

@@ -1,36 +1,47 @@
 local Scene = {}
+
+-- require
 local map = require "map"
-local current_scene = nil
+local tileSelector = require "tile_selector"
+-- local scene_manager = require "scene_manager"
+
+
 
 function Scene.load()
-    print("reset de la map")
     map.reset()
     map.loadQuads()
+    local TsX = map.gridSize + 5
+    local y = 5
+    tileSelector.setPosition(TsX, y)
+    print("Scene editor loaded")
 end
 
 
 function changeTile(x, y, tile)
     local tileX = math.floor(x / map.TILESIZE) + 1
-    -- print("colonne", tileX)
+    print("colonne", tileX)
     local tileY = math.floor(y / map.TILESIZE) + 1
-    -- print("ligne", tileY)
+    print("ligne", tileY)
     if tileX >= 1 and tileX <= map.MAPSIZE and tileY >= 1 and tileY <= map.MAPSIZE  then
         -- affichage de la tuile de notre choix par action du click
         map.Grid[tileX][tileY] = tile
-    -- else
-    --     print("Erreur! click en dehors de la grille")
+    else
+        print("Erreur! click en dehors de la grille")
     end
 end
 
 function Scene.update(dt)
+    
     local leftB = love.mouse.isDown(1)
     local rightB = love.mouse.isDown(2) 
     local x, y = love.mouse.getPosition()
     if leftB then  
-        changeTile(x,y,33)
+        changeTile(x,y, tileSelector.tile)
+        -- tileSelector.click(x, y)
     elseif rightB then 
         changeTile(x, y, 0)
     end
+    
 end
 
 
@@ -48,16 +59,17 @@ function Scene.draw()
 
         end
     end
+    tileSelector.draw()
 end
 
 function Scene.keypressed(key)
+    if key == "escape" then 
+        scene_manager.changeScene("menu")
+    end
+
 end
 
 function Scene.mousepressed(x, y, button)
-    if button == "l" then
-        print(x)
-        print(y)
-     end
 end
 
 
