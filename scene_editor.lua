@@ -1,7 +1,7 @@
 local Scene = {}
 local map = require "map"
 local current_scene = nil
--- local scene_menu = require "scene_menu"
+
 function Scene.load()
     print("reset de la map")
     map.reset()
@@ -40,7 +40,7 @@ function Scene.draw()
         for c = 1, map.MAPSIZE do 
             local x = (l-1) * map.TILESIZE
             local y = (c-1) * map.TILESIZE
-            love.graphics.rectangle("line", x, y, TILESIZE, TILESIZE)
+            love.graphics.rectangle("line", x, y, map.TILESIZE, map.TILESIZE)
             local id = map.Grid[l][c]
             if id > 0 then 
                 love.graphics.draw(map.imgTile, map.quads[id], x, y )

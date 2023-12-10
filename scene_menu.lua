@@ -52,7 +52,7 @@ function Scene.keypressed(key)
 end
 
 function Scene.mousepressed(x, y, button)
-    current_scene.mousepressed(x, y, button)
+    -- current_scene.mousepressed(x, y, button)
 end
 
 return Scene
