@@ -39,7 +39,7 @@ function Scene.update(dt)
     elseif rightB then 
         changeTile(x, y, 0)
     end
-    
+    tileSelector.update(dt)
 end
 
 
