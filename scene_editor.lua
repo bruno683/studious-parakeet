@@ -45,11 +45,9 @@ function Scene.draw()
             if id > 0 then 
                 love.graphics.draw(map.imgTile, map.quads[id], x, y )
             end
-            love.graphics.print(map.Grid[l][c], x + 2, y + 2 )
+            -- love.graphics.print(map.Grid[l][c], x + 2, y + 2 )
         end
     end
-
-
 end
 
 function Scene.keypressed(key)
