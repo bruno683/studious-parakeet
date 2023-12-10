@@ -5,6 +5,10 @@ Scene_manager.current_scene = nil
 
 function Scene_manager.changeScene(pScene)
     Scene_manager.current_scene = pScene
+    -- Scene_manager.current_scene.load()
+end
+
+function Scene_manager.load()
     Scene_manager.current_scene.load()
 end
 
@@ -14,17 +18,16 @@ end
 
 
 function Scene_manager.draw()
-    Scene_manager.draw()
+    Scene_manager.current_scene.draw()
+end
+
+function Scene_manager.mousepressed( x, y, button)
+    Scene_manager.current_scene.mousepressed( x, y, button)
 end
 
 
 function Scene_manager.keypressed(key)
-    Scene_manager.keypressed(key)
-end
-
-
-function Scene_manager.mousepressed(x, y, button)
-    Scene_manager.current_scene.mousepressed(x, y, button)
+    Scene_manager.current_scene.keypressed(key)
 end
 
 

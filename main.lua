@@ -6,11 +6,12 @@ textures = love.graphics.newImage("images/tiles.png")
 -- requires
 local scene = require "scene_menu"
 local scene_manager = require "scene_manager"
+local tileSelector = require "tile_selector"
  
 function love.load()
 
   scene_manager.changeScene(scene)
-  scene_manager.current_scene.load()
+  scene_manager.current_scene:load()
 
 end
 
@@ -36,6 +37,7 @@ function love.keypressed(key)
 end
 
 function love.mousepressed(x, y, button)
+  
   scene_manager.current_scene.mousepressed(x, y, button)
 end
 

@@ -2,6 +2,7 @@ local Map = {}
 
 Map.TILESIZE = 32
 Map.MAPSIZE = 32
+Map.gridSize = Map.TILESIZE * Map.MAPSIZE
 
 Map.imgTile = love.graphics.newImage("images/tiles.png")
 Map.Grid = {}
