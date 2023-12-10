@@ -10,7 +10,6 @@ scenes["editor"] = require("scene_editor")
 function Scene_manager.changeScene(pScene)
     Scene_manager.current_scene = scenes[pScene]
     Scene_manager.current_scene.load()
-    
 end
 
 
@@ -29,11 +28,7 @@ function Scene_manager.keypressed(key)
 end
 
 function Scene_manager.mousepressed(x, y, button)
-<<<<<<< HEAD
-    Scene_manager.current_scene.mousepressed()
-=======
-    Scene_manager.current_scene.mousepressed( x, y, button)
->>>>>>> tileSelector
+    Scene_manager.current_scene.mousepressed(x, y, button)
 end
 
 

@@ -10,8 +10,8 @@ scene_manager = require "scene_manager"
 
 function love.load()
 
-  scene_manager.changeScene(scene)
-  scene_manager.current_scene.load()
+  scene_manager.changeScene("menu")
+  
 
 end
 
