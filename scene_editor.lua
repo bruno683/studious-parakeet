@@ -3,6 +3,7 @@ local Scene = {}
 -- require
 local map = require "map"
 local tileSelector = require "tile_selector"
+local json = require "json"
 
 
 
