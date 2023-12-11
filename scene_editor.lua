@@ -5,7 +5,7 @@ local map = require "map"
 local tileSelector = require "tile_selector"
 
 
-
+local blink = 0
 
 
 function Scene.load()
@@ -42,7 +42,9 @@ function changeTile(x, y, tile)
 end
 
 function Scene.update(dt)
-    
+    if blink > 0 then 
+        blink = blink - dt
+    end
     local leftB = love.mouse.isDown(1)
     local rightB = love.mouse.isDown(2) 
     local x, y = love.mouse.getPosition()
@@ -65,8 +67,14 @@ function Scene.draw()
             if id > 0 then 
                 love.graphics.draw(map.imgTile, map.quads[id], x, y )
             end
-
         end
+    end
+    if blink > 0 then 
+        love.graphics.setColor(1,1,1,1)
+        love.graphics.rectangle("fill", 0,0,250, 20)
+        love.graphics.setColor(0,0,0)
+        love.graphics.print("SAUVEGARDE EFFECTUE")
+        love.graphics.setColor(1,1,1,1)
     end
     tileSelector.draw()
 end
@@ -77,6 +85,7 @@ function Scene.keypressed(key)
     end
     if key == "s" then 
         map.Save()
+        blink = 2
     end
 
 end
