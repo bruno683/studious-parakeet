@@ -8,7 +8,26 @@ local blinkTimer = 0
 local blinkDuration = 0.2
 local blinkFlag = false
 TileSelector.tiles = {
-    17,18,19,20,21,22,23,24,34,58,59,60,305,306,307,308,321,322,323,324,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    34,
+    58,
+    59,
+    60,
+    305,
+    306,
+    307,
+    308,
+    321,
+    322,
+    323,
+    324
 }
 TileSelector.index = 1
 TileSelector.tile = TileSelector.tiles[TileSelector.index]
@@ -17,6 +36,15 @@ function TileSelector.setPosition(pX, pY)
     TileSelector.x = pX
     TileSelector.y = pY
     
+end
+
+function TileSelector.SetTile(tileId)
+    for n = 1, #TileSelector.tiles do 
+        if TileSelector.tiles[n] == tileId then
+            TileSelector.tile = tileId
+            TileSelector.index = n
+        end
+    end
 end
 
 function TileSelector.Click(pX, pY)
@@ -35,7 +63,7 @@ function TileSelector.Click(pX, pY)
    local n =  ((Ligne - 1) * TileSelector.Columns) + Column
    if n <= #TileSelector.tiles then 
     TileSelector.index = n
-    TileSelector.tile = TileSelector.tiles[TileSelector.index]
+    TileSelector.tile = TileSelector.tiles[n]
    end
 end
 
@@ -46,6 +74,7 @@ function TileSelector.update(dt)
         blinkFlag = not blinkFlag
     end
 end
+
 
 
 

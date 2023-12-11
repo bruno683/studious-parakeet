@@ -8,7 +8,12 @@ Map.imgTile = love.graphics.newImage("images/tiles.png")
 Map.Grid = {}
 Map.quads = {}
 
-
+function Map.OutOfBounds(c, l)
+    if c >= 1 and c <= Map.MAPSIZE and l >= 1 and l <= Map.MAPSIZE  then
+        return true
+    end
+    return false
+end
 function Map.loadQuads()
     
     nbTileWidth = Map.imgTile:getWidth() / 32
@@ -23,28 +28,31 @@ function Map.loadQuads()
             n = n + 1
         end
     end
-
-
 end
 
 
+function Map.PixelToMap(x, y)
+    local col = math.floor(x / Map.TILESIZE) + 1
+    local line = math.floor(y / Map.TILESIZE) + 1
+    return col, line
+end
 
+function Map.MapToPixel(c, l)
+    local x = (l-1) * Map.TILESIZE
+    local y = (c-1) * Map.TILESIZE
+    return x, y
+end
 
 
 
 function Map.reset()
     Map.Grid = {}
-
     for l = 1, Map.MAPSIZE do 
         Map.Grid[l] = {}
         for c = 1, Map.MAPSIZE do 
             Map.Grid[l][c] = 0
         end
     end
-
 end
-
-
-
 
 return  Map

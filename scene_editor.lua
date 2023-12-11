@@ -16,15 +16,25 @@ function Scene.load()
     print("Scene editor loaded")
 end
 
+function TilePicker(x, y)
+    local col, line = map.PixelToMap(x, y)
+    
+    if map.OutOfBounds(col, line) then
+        local id = map.Grid[col][line] 
+        print("id :", id)
+        if id > 0 then
+            tileSelector.SetTile(id)
+        end
+    end
+    
+end
 
 function changeTile(x, y, tile)
-    local tileX = math.floor(x / map.TILESIZE) + 1
+    local col, line = map.PixelToMap(x, y)
     
-    local tileY = math.floor(y / map.TILESIZE) + 1
-    
-    if tileX >= 1 and tileX <= map.MAPSIZE and tileY >= 1 and tileY <= map.MAPSIZE  then
+    if map.OutOfBounds(col, line)  then
         -- affichage de la tuile de notre choix par action du click
-        map.Grid[tileX][tileY] = tile
+        map.Grid[col][line] = tile
     end
 end
 
@@ -35,7 +45,6 @@ function Scene.update(dt)
     local x, y = love.mouse.getPosition()
     if leftB then  
         changeTile(x,y, tileSelector.tile)
-        -- tileSelector.click(x, y)
     elseif rightB then 
         changeTile(x, y, 0)
     end
@@ -47,8 +56,7 @@ function Scene.draw()
 
     for l= 1, map.MAPSIZE do 
         for c = 1, map.MAPSIZE do 
-            local x = (l-1) * map.TILESIZE
-            local y = (c-1) * map.TILESIZE
+            local x, y = map.MapToPixel(c, l)
             love.graphics.draw(map.imgTile, map.quads[33] , x, y)
             local id = map.Grid[l][c]
             if id > 0 then 
@@ -72,7 +80,10 @@ function Scene.mousepressed(x, y, button)
         print("Click")
         tileSelector.Click(x, y)
     end
-
+    if button == 3 then 
+        TilePicker(x, y)
+        print("middle click")
+    end
 end
 
 
