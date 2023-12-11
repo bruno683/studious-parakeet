@@ -1,5 +1,7 @@
 local Map = {}
 
+
+local json = require "json"
 Map.TILESIZE = 32
 Map.MAPSIZE = 32
 Map.gridSize = Map.TILESIZE * Map.MAPSIZE
@@ -7,6 +9,9 @@ Map.gridSize = Map.TILESIZE * Map.MAPSIZE
 Map.imgTile = love.graphics.newImage("images/tiles.png")
 Map.Grid = {}
 Map.quads = {}
+
+Map.level = 1
+
 
 function Map.OutOfBounds(c, l)
     if c >= 1 and c <= Map.MAPSIZE and l >= 1 and l <= Map.MAPSIZE  then
@@ -54,5 +59,31 @@ function Map.reset()
         end
     end
 end
+
+function Map.Save()
+    local toSave = {}
+    toSave.grid = Map.Grid
+    local  formatJson = json.encode(toSave)
+    local fileName = "ChipLevel_"..Map.level..".json"
+    local file = love.filesystem.newFile(fileName)
+    file:open("w")
+    file:write(formatJson)
+    file:close()
+
+end
+
+function Map.load()
+    local fileName = "ChipLevel_"..Map.level..".json"
+    if love.filesystem.getInfo(fileName) ~= nil then
+        local file = love.filesystem.newFile(fileName)
+        file:open("r")
+        local formatJson = file:read()
+        local formatLua = json.decode(formatJson)
+        Map.Grid = formatLua.grid
+    end
+
+end
+
+
 
 return  Map

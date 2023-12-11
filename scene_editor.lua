@@ -3,7 +3,7 @@ local Scene = {}
 -- require
 local map = require "map"
 local tileSelector = require "tile_selector"
-local json = require "json"
+
 
 
 
@@ -11,6 +11,8 @@ local json = require "json"
 function Scene.load()
     map.reset()
     map.loadQuads()
+    map.load() -- la sauvegarde de la dernière map est 
+                -- chargé au lancement de l'éditeur de niveau
     local TsX = map.gridSize + 5
     local y = 5
     tileSelector.setPosition(TsX, y)
@@ -72,6 +74,9 @@ end
 function Scene.keypressed(key)
     if key == "escape" then 
         scene_manager.changeScene("menu")
+    end
+    if key == "s" then 
+        map.Save()
     end
 
 end
