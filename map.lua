@@ -43,8 +43,8 @@ function Map.PixelToMap(x, y)
 end
 
 function Map.MapToPixel(c, l)
-    local x = (l-1) * Map.TILESIZE
-    local y = (c-1) * Map.TILESIZE
+    local x = (c-1) * Map.TILESIZE
+    local y = (l-1) * Map.TILESIZE
     return x, y
 end
 
@@ -91,7 +91,7 @@ function Map.draw()
         for c = 1, Map.MAPSIZE do 
             local x, y = Map.MapToPixel(c, l)
             love.graphics.draw(Map.imgTile, Map.quads[33] , x, y)
-            local id = Map.Grid[l][c]
+            local id = Map.Grid[c][l]
             if id > 0 then 
                 love.graphics.draw(Map.imgTile, Map.quads[id], x, y )
             end
