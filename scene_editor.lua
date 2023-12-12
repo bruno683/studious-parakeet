@@ -23,7 +23,7 @@ function TilePicker(x, y)
     local col, line = map.PixelToMap(x, y)
     
     if map.OutOfBounds(col, line) then
-        local id = map.Grid[col][line] 
+        local id = map.Grid[line][col] 
         print("id :", id)
         if id > 0 then
             tileSelector.SetTile(id)
@@ -37,7 +37,7 @@ function changeTile(x, y, tile)
     
     if map.OutOfBounds(col, line)  then
         -- affichage de la tuile de notre choix par action du click
-        map.Grid[col][line] = tile
+        map.Grid[line][col] = tile
     end
 end
 

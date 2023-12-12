@@ -16,6 +16,8 @@ function Scene.load()
 end
 
 function Scene.update(dt)
+    fps = math.floor(1 / dt)
+    local old_column, old_line = Chip.column, Chip.line
     -- Le booléen est vrai lorsqu'un bouton est enfoncé
     bMove = love.keyboard.isDown("right") or love.keyboard.isDown("down") or love.keyboard.isDown("left") or love.keyboard.isDown("up")
 
@@ -35,6 +37,10 @@ function Scene.update(dt)
         elseif love.keyboard.isDown("up") and Chip.line > 1 then 
             Chip.line = Chip.line - 1
         end
+        if map.isSolid(Chip.column, Chip.line) then
+            Chip.column = old_column
+            Chip.line = old_line
+        end
         timeToMove = moveSpeed
     end
     
@@ -46,6 +52,7 @@ function Scene.draw()
     map.draw()
     x, y = map.MapToPixel(Chip.column, Chip.line)
     love.graphics.draw(map.imgTile, map.quads[369], x, y)
+    love.graphics.print("Current FPS: "..tostring(love.timer.getFPS( )), 10, 10)
 end
 
 

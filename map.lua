@@ -9,7 +9,13 @@ Map.gridSize = Map.TILESIZE * Map.MAPSIZE
 Map.imgTile = love.graphics.newImage("images/tiles.png")
 Map.Grid = {}
 Map.quads = {}
-
+Map.SolidTiles = {
+    17,
+    18,
+    19,
+    20,
+    34
+}
 Map.level = 1
 
 
@@ -19,6 +25,17 @@ function Map.OutOfBounds(c, l)
     end
     return false
 end
+
+function Map.isSolid(c, l)
+    local id = Map.Grid[l][c]
+    for n = 1, #Map.SolidTiles do 
+        if id == Map.SolidTiles[n] then 
+            return true
+        end
+    end
+    -- return false
+end
+
 function Map.loadQuads()
     
     nbTileWidth = Map.imgTile:getWidth() / 32
@@ -61,9 +78,9 @@ function Map.reset()
 end
 
 function Map.Save()
-    local toSave = {}
+    local toSave = {} -- toutes les données que l'on veut sauvegarder
     toSave.grid = Map.Grid
-    local  formatJson = json.encode(toSave)
+    local formatJson = json.encode(toSave)
     local fileName = "ChipLevel_"..Map.level..".json"
     local file = love.filesystem.newFile(fileName)
     file:open("w")
@@ -91,7 +108,7 @@ function Map.draw()
         for c = 1, Map.MAPSIZE do 
             local x, y = Map.MapToPixel(c, l)
             love.graphics.draw(Map.imgTile, Map.quads[33] , x, y)
-            local id = Map.Grid[c][l]
+            local id = Map.Grid[l][c]
             if id > 0 then 
                 love.graphics.draw(Map.imgTile, Map.quads[id], x, y )
             end
