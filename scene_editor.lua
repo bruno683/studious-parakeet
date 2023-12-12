@@ -58,17 +58,8 @@ end
 
 
 function Scene.draw()
-
-    for l= 1, map.MAPSIZE do 
-        for c = 1, map.MAPSIZE do 
-            local x, y = map.MapToPixel(c, l)
-            love.graphics.draw(map.imgTile, map.quads[33] , x, y)
-            local id = map.Grid[l][c]
-            if id > 0 then 
-                love.graphics.draw(map.imgTile, map.quads[id], x, y )
-            end
-        end
-    end
+    map.draw()
+    
     if blink > 0 then 
         love.graphics.setColor(1,1,1,1)
         love.graphics.rectangle("fill", 0,0,250, 20)

@@ -86,6 +86,20 @@ function Map.load()
 
 end
 
+function Map.draw()
+    for l= 1, Map.MAPSIZE do 
+        for c = 1, Map.MAPSIZE do 
+            local x, y = Map.MapToPixel(c, l)
+            love.graphics.draw(Map.imgTile, Map.quads[33] , x, y)
+            local id = Map.Grid[l][c]
+            if id > 0 then 
+                love.graphics.draw(Map.imgTile, Map.quads[id], x, y )
+            end
+        end
+    end
+end
+
+
 
 
 return  Map
