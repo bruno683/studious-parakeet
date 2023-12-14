@@ -2,6 +2,7 @@ local Scene = {}
 -- require
 local map = require "map"
 local Chip = require "chip"
+local Inventory = require "inventory"
 -- local scene_manager = require "scene_manager"
 
 local bMove = false
@@ -13,6 +14,12 @@ function Scene.load()
     map.level = 1
     map.loadQuads()
     map.load()
+    Chip.column = 1
+    Chip.line = 1
+    Inventory.Clear()
+    local InX = map.gridSize + 5
+    local y = 5
+    Inventory.setPosition(InX, y)
 end
 
 function Scene.update(dt)
@@ -37,19 +44,30 @@ function Scene.update(dt)
         elseif love.keyboard.isDown("up") and Chip.line > 1 then 
             Chip.line = Chip.line - 1
         end
+        if map.isCollectible(Chip.column, Chip.line) then
+            collect(Chip.column, Chip.line)
+        end
+        if map.isDoor(Chip.column,Chip.line) then
+             for k, v in pairs(Inventory.lstItems) do
+                local idDoor = map.getId(Chip.column, Chip.line)
+                if map.canOpenDoor(idDoor, v.id) then
+                    map.Remove(Chip.column,Chip.line)
+                    Inventory.Remove(v.id)
+                end 
+             end
+        end
         if map.isSolid(Chip.column, Chip.line) then
             Chip.column = old_column
             Chip.line = old_line
         end
         timeToMove = moveSpeed
     end
-    
-    
 end
 
 
 function Scene.draw()
     map.draw()
+    Inventory.Draw()
     x, y = map.MapToPixel(Chip.column, Chip.line)
     love.graphics.draw(map.imgTile, map.quads[369], x, y)
     love.graphics.print("Current FPS: "..tostring(love.timer.getFPS( )), 10, 10)
@@ -64,6 +82,12 @@ end
 
 function Scene.mousepressed(x, y, button)
     
+end
+
+function collect(c, l)
+    local id = map.getId(c, l)
+    Inventory.Add(id)
+    map.Remove(c,l)
 end
 
 return Scene

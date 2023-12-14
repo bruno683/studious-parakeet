@@ -18,6 +18,13 @@ Map.SolidTiles = {
 }
 Map.level = 1
 
+Map.Collectibles = {
+    21,22,23,24
+}
+
+Map.Doors = {
+    {id = 17, key = 21}, {id = 18, key = 22}, {id = 19, key = 23}, {id = 20, key = 24}
+}
 
 function Map.OutOfBounds(c, l)
     if c >= 1 and c <= Map.MAPSIZE and l >= 1 and l <= Map.MAPSIZE  then
@@ -26,6 +33,15 @@ function Map.OutOfBounds(c, l)
     return false
 end
 
+function Map.Remove(c, l)
+    if c >= 1 and c <= Map.MAPSIZE and l >= 1 and l <= Map.MAPSIZE  then
+        Map.Grid[l][c] = 0
+    else
+        print("Map.remove ERROR :  Out of Bounds")
+    end
+end
+
+
 function Map.isSolid(c, l)
     local id = Map.Grid[l][c]
     for n = 1, #Map.SolidTiles do 
@@ -33,8 +49,48 @@ function Map.isSolid(c, l)
             return true
         end
     end
-    -- return false
+    return false
 end
+
+function Map.isCollectible(c, l)
+    local id = Map.Grid[l][c]
+    for n = 1, #Map.Collectibles do 
+        if id == Map.Collectibles[n] then 
+            return true
+        end
+    end
+    return false
+end
+
+function Map.isDoor(c, l)
+    local id = Map.Grid[l][c]
+    for n = 1, #Map.Doors do 
+        if id == Map.Doors[n].id then 
+            return true
+        end
+    end
+    return false
+end
+
+function Map.canOpenDoor(idDoor, idKey)
+    for k,v in pairs(Map.Doors) do 
+        if v.id == idDoor and v.key == idKey then 
+            return true
+        end
+    end
+    return false
+end
+
+
+
+function Map.getId(c,l)
+    if c >= 1 and c <= Map.MAPSIZE and l >= 1 and l <= Map.MAPSIZE  then
+        return Map.Grid[l][c]
+    end
+    return -1
+end
+
+
 
 function Map.loadQuads()
     
