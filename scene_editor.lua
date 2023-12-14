@@ -6,13 +6,14 @@ local tileSelector = require "tile_selector"
 
 
 local blink = 0
-
+local blinkMessage = " "
 
 function Scene.load()
     map.reset()
     map.loadQuads()
     map.load() -- la sauvegarde de la dernière map est 
                 -- chargé au lancement de l'éditeur de niveau
+    message("LEVEL "..map.level)
     local TsX = map.gridSize + 5
     local y = 5
     tileSelector.setPosition(TsX, y)
@@ -56,6 +57,16 @@ function Scene.update(dt)
     tileSelector.update(dt)
 end
 
+function message(pMessage)
+    blinkMessage = pMessage
+    blink = 2
+end
+function ChangeLevel(pLevel)
+    map.Save()
+    map.level = pLevel
+    map.load()
+    message("LEVEL "..map.level)
+end
 
 function Scene.draw()
     map.draw()
@@ -64,7 +75,7 @@ function Scene.draw()
         love.graphics.setColor(1,1,1,1)
         love.graphics.rectangle("fill", 0,0,250, 20)
         love.graphics.setColor(0,0,0)
-        love.graphics.print("SAUVEGARDE EFFECTUE")
+        love.graphics.print(blinkMessage)
         love.graphics.setColor(1,1,1,1)
     end
     tileSelector.draw()
@@ -76,7 +87,13 @@ function Scene.keypressed(key)
     end
     if key == "s" then 
         map.Save()
+        message("SAUVEGARDE EFFECTUEE")
         blink = 2
+    end
+    if key == "kp+" then
+        ChangeLevel(map.level + 1)
+    elseif key == "kp-" and map.level > 1 then
+       ChangeLevel(map.level - 1)
     end
 
 end

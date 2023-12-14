@@ -154,6 +154,7 @@ function Map.load()
         local formatLua = json.decode(formatJson) -- on decode du json le fichier
         Map.Grid = formatLua.grid -- on extrait les données
     else 
+        Map.reset()
         print('No save(s) founded')
     end
 
