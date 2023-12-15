@@ -16,6 +16,7 @@ textures = love.graphics.newImage("images/tiles.png")
 
 -- requires
 scene_manager = require "scene_manager"
+
 local fps = love.timer.getFPS()
 
 function love.load()
