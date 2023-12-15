@@ -36,7 +36,7 @@ local vortexOffset = 0
 local animTimer = 0
 local animSpeed = 0.2
 
-
+local openPortal = love.audio.newSource("Music/openPortal.wav", "static")
 
 
 function Map.OutOfBounds(c, l)
@@ -147,9 +147,13 @@ function Map.DestroyObject(pId)
             local id = Map.Grid[l][c]
             if id == pId then
                Map.Remove(c,l)
+               openPortal:play()
+            --    openPortal:stop()
             end
         end
     end
+    
+
 end
 
 function Map.getId(c,l)

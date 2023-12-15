@@ -4,6 +4,7 @@ local Scene = {}
 local map = require "map"
 local tileSelector = require "tile_selector"
 
+local placeTile = love.audio.newSource("Music/placeTile.wav", "static")
 
 local blink = 0
 local blinkMessage = " "
@@ -39,6 +40,8 @@ function changeTile(x, y, tile)
     if map.OutOfBounds(col, line)  then
         -- affichage de la tuile de notre choix par action du click
         map.Grid[line][col] = tile
+        placeTile:stop()
+        placeTile:play()
     end
 end
 

@@ -9,6 +9,17 @@ local bMove = false
 local timeToMove = 0
 local moveSpeed = 0.1
 local chipsLeft = 0
+-- Musiques et sons
+local music  = love.audio.newSource("Music/Theme.ogg", "stream")
+local changeLevel = love.audio.newSource("Music/changeLevel.wav", "static")
+local collectChip = love.audio.newSource("Music/collectChip.wav", "static")
+local collectkey = love.audio.newSource("Music/collectkey.wav", "static")
+local openDoor = love.audio.newSource("Music/openDoor.wav", "static")
+local openPortal = love.audio.newSource("Music/openPortal.wav", "static")
+
+-- set looping on main theme
+music:setLooping(true)
+local play = false
 
 function Start()
     Chip.column = 1
@@ -26,6 +37,7 @@ function Scene.load()
     local InX = map.gridSize + 5
     local y = 5
     Inventory.setPosition(InX, y)
+    music:play()
 end
 
 function Scene.update(dt)
@@ -39,6 +51,7 @@ function Scene.update(dt)
     if bMove and timeToMove > 0 then
         timeToMove = timeToMove - dt
     end
+    
 
     -- quand le timer est à 0 ou moins alors les mouvements sont possibles
     if timeToMove <= 0 then 
@@ -53,14 +66,21 @@ function Scene.update(dt)
         end
         if map.isCollectible(Chip.column, Chip.line) then
             collect(Chip.column, Chip.line)
+            collectkey:stop()
+            collectkey:play()
         end
         if map.isChip(Chip.column, Chip.line) then
             collect(Chip.column, Chip.line)
+            collectChip:stop()
+            collectChip:play()
+
         end
         if map.isDoor(Chip.column,Chip.line) then
              for k, v in pairs(Inventory.lstItems.keys) do
                 local idDoor = map.getId(Chip.column, Chip.line)
                 if map.canOpenDoor(idDoor, v.id) then
+                    openDoor:stop()
+                    openDoor:play()
                     map.Remove(Chip.column,Chip.line)
                     Inventory.Remove(v.id)
                 end 
@@ -68,6 +88,7 @@ function Scene.update(dt)
         end
         if map.isVortex(Chip.column, Chip.line) then
             map.ChangeLevel(map.level + 1, false)
+            changeLevel:play()
             Start()
         end
         if map.isSolid(Chip.column, Chip.line) then
