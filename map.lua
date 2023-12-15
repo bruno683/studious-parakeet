@@ -114,11 +114,18 @@ function Map.canOpenDoor(idDoor, idKey)
     return false
 end
 
-function Map.ChangeLevel(pLevel)
-    -- Map.Save()
-    Map.level = pLevel
-    Map.load()
+function Map.ChangeLevel(pLevel, bSave)
+    bSave = bSave or false
+    if pLevel >= 1 then
+        if bSave then 
+            Map.Save()
+        end
+        Map.level = pLevel
+        if bSave == false then
+            Map.load()
+        end
     message("LEVEL "..Map.level)
+    end
 end
 
 

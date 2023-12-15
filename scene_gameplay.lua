@@ -67,7 +67,7 @@ function Scene.update(dt)
              end
         end
         if map.isVortex(Chip.column, Chip.line) then
-            map.ChangeLevel(map.level + 1)
+            map.ChangeLevel(map.level + 1, false)
             Start()
         end
         if map.isSolid(Chip.column, Chip.line) then

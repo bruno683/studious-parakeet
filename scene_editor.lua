@@ -87,9 +87,9 @@ function Scene.keypressed(key)
         blink = 2
     end
     if key == "kp+" then
-        map.ChangeLevel(map.level + 1)
+        map.ChangeLevel(map.level + 1, true)
     elseif key == "kp-" and map.level > 1 then
-       map.ChangeLevel(map.level - 1)
+       map.ChangeLevel(map.level - 1, true)
     end
 end
 
