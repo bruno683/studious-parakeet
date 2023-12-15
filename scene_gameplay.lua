@@ -14,6 +14,7 @@ function Start()
     Chip.column = 1
     Chip.line = 1
     Inventory.Clear()
+    chipsLeft = map.TotalChips
 end
 
 function Scene.load()

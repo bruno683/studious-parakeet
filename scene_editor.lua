@@ -79,6 +79,7 @@ end
 function Scene.keypressed(key)
     if key == "escape" then 
         scene_manager.changeScene("menu")
+        map.reset()
     end
     if key == "s" then 
         map.Save()
