@@ -2,10 +2,12 @@ local Map = {}
 
 
 local json = require "json"
+
 Map.TILESIZE = 32
 Map.MAPSIZE = 32
 Map.gridSize = Map.TILESIZE * Map.MAPSIZE
-
+Map.DOOR = 37
+Map.TILEVORTEX = 39
 Map.imgTile = love.graphics.newImage("images/tiles.png")
 Map.Grid = {}
 Map.quads = {}
@@ -14,17 +16,28 @@ Map.SolidTiles = {
     18,
     19,
     20,
-    34
+    34,
+    37
 }
 Map.level = 1
-
+Map.TotalChips = 0
 Map.Collectibles = {
     21,22,23,24
 }
 
+
+Map.Chips = {58,59,60}
+Map.Vortex = {39,40,41,42}
 Map.Doors = {
     {id = 17, key = 21}, {id = 18, key = 22}, {id = 19, key = 23}, {id = 20, key = 24}
 }
+
+local vortexOffset = 0
+local animTimer = 0
+local animSpeed = 0.2
+
+
+
 
 function Map.OutOfBounds(c, l)
     if c >= 1 and c <= Map.MAPSIZE and l >= 1 and l <= Map.MAPSIZE  then
@@ -62,10 +75,30 @@ function Map.isCollectible(c, l)
     return false
 end
 
+function Map.isChip(c, l)
+    local id = Map.Grid[l][c]
+    for n = 1, #Map.Chips do 
+        if id == Map.Chips[n] then 
+            return true
+        end
+    end
+    return false
+end
+
 function Map.isDoor(c, l)
     local id = Map.Grid[l][c]
     for n = 1, #Map.Doors do 
         if id == Map.Doors[n].id then 
+            return true
+        end
+    end
+    return false
+end
+
+function Map.isVortex(c, l)
+    local id = Map.Grid[l][c]
+    for n = 1, #Map.Vortex do 
+        if id == Map.Vortex[n] then 
             return true
         end
     end
@@ -81,7 +114,36 @@ function Map.canOpenDoor(idDoor, idKey)
     return false
 end
 
+function Map.ChangeLevel(pLevel)
+    -- Map.Save()
+    Map.level = pLevel
+    Map.load()
+    message("LEVEL "..Map.level)
+end
 
+
+function Map.Update(dt)
+    animTimer = animTimer + dt
+    if animTimer >= animSpeed then 
+        vortexOffset = vortexOffset + 1
+        if vortexOffset > 3 then 
+            vortexOffset = 0
+        end
+        animTimer = 0
+    end
+    
+end
+
+function Map.DestroyObject(pId) 
+    for l = 1, Map.MAPSIZE do 
+        for c = 1, Map.MAPSIZE do 
+            local id = Map.Grid[l][c]
+            if id == pId then
+               Map.Remove(c,l)
+            end
+        end
+    end
+end
 
 function Map.getId(c,l)
     if c >= 1 and c <= Map.MAPSIZE and l >= 1 and l <= Map.MAPSIZE  then
@@ -124,10 +186,11 @@ end
 
 
 function Map.reset()
+    Map.TotalChips = 0
     Map.Grid = {}
     for l = 1, Map.MAPSIZE do 
         Map.Grid[l] = {}
-        for c = 1, Map.MAPSIZE do 
+        for c = 1, Map.MAPSIZE do   
             Map.Grid[l][c] = 0
         end
     end
@@ -158,6 +221,13 @@ function Map.load()
         print('No save(s) founded')
     end
 
+    for l = 1, Map.MAPSIZE do 
+        for c = 1, Map.MAPSIZE do 
+            if Map.isChip(c, l) then 
+                Map.TotalChips = Map.TotalChips + 1
+            end
+        end
+    end
 end
 
 function Map.draw()
@@ -166,9 +236,13 @@ function Map.draw()
             local x, y = Map.MapToPixel(c, l)
             love.graphics.draw(Map.imgTile, Map.quads[33] , x, y)
             local id = Map.Grid[l][c]
+            if id == Map.TILEVORTEX then 
+                id = id + vortexOffset
+            end
             if id > 0 then 
                 love.graphics.draw(Map.imgTile, Map.quads[id], x, y )
             end
+            
         end
     end
 end

@@ -61,12 +61,7 @@ function message(pMessage)
     blinkMessage = pMessage
     blink = 2
 end
-function ChangeLevel(pLevel)
-    map.Save()
-    map.level = pLevel
-    map.load()
-    message("LEVEL "..map.level)
-end
+
 
 function Scene.draw()
     map.draw()
@@ -91,11 +86,10 @@ function Scene.keypressed(key)
         blink = 2
     end
     if key == "kp+" then
-        ChangeLevel(map.level + 1)
+        map.ChangeLevel(map.level + 1)
     elseif key == "kp-" and map.level > 1 then
-       ChangeLevel(map.level - 1)
+       map.ChangeLevel(map.level - 1)
     end
-
 end
 
 function Scene.mousepressed(x, y, button)

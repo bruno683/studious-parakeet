@@ -7,22 +7,28 @@ local Inventory = require "inventory"
 
 local bMove = false
 local timeToMove = 0
-local moveSpeed = 0.2
+local moveSpeed = 0.1
+local chipsLeft = 0
 
+function Start()
+    Chip.column = 1
+    Chip.line = 1
+    Inventory.Clear()
+end
 
 function Scene.load()
     map.level = 1
     map.loadQuads()
     map.load()
-    Chip.column = 1
-    Chip.line = 1
-    Inventory.Clear()
+    chipsLeft = map.TotalChips
+    Start()
     local InX = map.gridSize + 5
     local y = 5
     Inventory.setPosition(InX, y)
 end
 
 function Scene.update(dt)
+    map.Update(dt)
     fps = math.floor(1 / dt)
     local old_column, old_line = Chip.column, Chip.line
     -- Le booléen est vrai lorsqu'un bouton est enfoncé
@@ -47,8 +53,11 @@ function Scene.update(dt)
         if map.isCollectible(Chip.column, Chip.line) then
             collect(Chip.column, Chip.line)
         end
+        if map.isChip(Chip.column, Chip.line) then
+            collect(Chip.column, Chip.line)
+        end
         if map.isDoor(Chip.column,Chip.line) then
-             for k, v in pairs(Inventory.lstItems) do
+             for k, v in pairs(Inventory.lstItems.keys) do
                 local idDoor = map.getId(Chip.column, Chip.line)
                 if map.canOpenDoor(idDoor, v.id) then
                     map.Remove(Chip.column,Chip.line)
@@ -56,11 +65,19 @@ function Scene.update(dt)
                 end 
              end
         end
+        if map.isVortex(Chip.column, Chip.line) then
+            map.ChangeLevel(map.level + 1)
+            Start()
+        end
         if map.isSolid(Chip.column, Chip.line) then
             Chip.column = old_column
             Chip.line = old_line
         end
         timeToMove = moveSpeed
+    end
+    chipsLeft = map.TotalChips
+    if chipsLeft < 1 then
+        map.DestroyObject(map.DOOR)
     end
 end
 
@@ -71,6 +88,8 @@ function Scene.draw()
     x, y = map.MapToPixel(Chip.column, Chip.line)
     love.graphics.draw(map.imgTile, map.quads[369], x, y)
     love.graphics.print("Current FPS: "..tostring(love.timer.getFPS( )), 10, 10)
+
+    love.graphics.print("CHIPS LEFT : "..chipsLeft, map.gridSize + 5, love.graphics.getHeight() - 40 )
 end
 
 
