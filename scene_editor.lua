@@ -53,7 +53,7 @@ function Scene.update(dt)
     local rightB = love.mouse.isDown(2) 
     local x, y = love.mouse.getPosition()
     if leftB then  
-        changeTile(x,y, tileSelector.tile)
+        changeTile(x,y, map.tile)
     elseif rightB then 
         changeTile(x, y, 0)
     end

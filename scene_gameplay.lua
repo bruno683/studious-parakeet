@@ -64,12 +64,12 @@ function Scene.update(dt)
         elseif love.keyboard.isDown("up") and Chip.line > 1 then 
             Chip.line = Chip.line - 1
         end
-        if map.isCollectible(Chip.column, Chip.line) then
+        if map.GetFlagByPos(Chip.column, Chip.line, map.flags.collectible) then
             collect(Chip.column, Chip.line)
             collectkey:stop()
             collectkey:play()
         end
-        if map.isChip(Chip.column, Chip.line) then
+        if map.GetFlagByPos(Chip.column, Chip.line, map.flags.chip) then
             collect(Chip.column, Chip.line)
             collectChip:stop()
             collectChip:play()
@@ -86,12 +86,12 @@ function Scene.update(dt)
                 end 
              end
         end
-        if map.isVortex(Chip.column, Chip.line) then
+        if map.GetFlagByPos(Chip.column, Chip.line, map.flags.vortex) then
             map.ChangeLevel(map.level + 1, false)
             changeLevel:play()
             Start()
         end
-        if map.isSolid(Chip.column, Chip.line) then
+        if map.GetFlagByPos(Chip.column, Chip.line, map.flags.solid) then
             Chip.column = old_column
             Chip.line = old_line
         end

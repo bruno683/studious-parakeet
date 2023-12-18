@@ -11,26 +11,55 @@ Map.TILEVORTEX = 39
 Map.imgTile = love.graphics.newImage("images/tiles.png")
 Map.Grid = {}
 Map.quads = {}
-Map.SolidTiles = {
+Map.flags = { solid = 1,
+                collectible = 2, 
+                chip = 3, 
+                vortex = 4,     
+                door = 5, 
+                ice = 6
+            }
+Map.tiles = {
     17,
     18,
     19,
     20,
+    21,
+    22,
+    23,
+    27,
+    28,
+    29,
+    30,
+    31,
+    24,
     34,
-    37
+    37,
+    39,
+    58,
+    59,
+    60,
+    305,
+    306,
+    307,
+    308,
+    321,
+    322,
+    323,
+    324
 }
+
 Map.level = 1
 Map.TotalChips = 0
-Map.Collectibles = {
-    21,22,23,24
-}
 
 
-Map.Chips = {58,59,60}
+
+
 Map.Vortex = {39,40,41,42}
 Map.Doors = {
     {id = 17, key = 21}, {id = 18, key = 22}, {id = 19, key = 23}, {id = 20, key = 24}
 }
+
+Map.TileFlags = {}
 
 local vortexOffset = 0
 local animTimer = 0
@@ -38,6 +67,60 @@ local animSpeed = 0.2
 
 local openPortal = love.audio.newSource("Music/openPortal.wav", "static")
 
+Map.Inititalized = false
+
+function Map.Init()
+    Map.TileFlags = {}
+    for _, vt in ipairs(Map.tiles) do 
+        Map.TileFlags[vt] = {}
+        for _, vf in pairs(Map.flags) do 
+            Map.TileFlags[vt][vf] = false
+
+            -- print(Map.TileFlags[vt][vf])
+        end
+    end
+    -- Tiles Solides
+    Map.TileFlags[17][Map.flags.solid] = true
+    Map.TileFlags[18][Map.flags.solid] = true
+    Map.TileFlags[19][Map.flags.solid] = true
+    Map.TileFlags[20][Map.flags.solid] = true
+    Map.TileFlags[34][Map.flags.solid] = true
+    Map.TileFlags[37][Map.flags.solid] = true
+    -- Tiles Collectibles
+    Map.TileFlags[21][Map.flags.collectible] = true
+    Map.TileFlags[22][Map.flags.collectible] = true
+    Map.TileFlags[23][Map.flags.collectible] = true
+    Map.TileFlags[24][Map.flags.collectible] = true
+    -- Tile Chipf
+    Map.TileFlags[58][Map.flags.chip] = true
+    Map.TileFlags[59][Map.flags.chip] = true
+    Map.TileFlags[60][Map.flags.chip] = true
+    -- Tile Vortex
+    Map.TileFlags[39][Map.flags.vortex] = true
+    -- Tile Door
+    Map.TileFlags[37][Map.flags.door] = true
+    -- ice 
+    Map.TileFlags[27][Map.flags.ice] = true
+    Map.TileFlags[28][Map.flags.ice] = true
+    Map.TileFlags[29][Map.flags.ice] = true
+    Map.TileFlags[30][Map.flags.ice] = true
+    Map.TileFlags[31][Map.flags.ice] = true
+
+    Map.Inititalized = true
+end
+
+function Map.GetFlagById(pId, pFlag)
+    if Map.TileFlags[pId] == nil then
+        return false
+    else
+        return Map.TileFlags[pId][pFlag]
+    end
+end
+
+function Map.GetFlagByPos(c, l, pFlag)
+    local id = Map.Grid[l][c]
+    return Map.GetFlagById(id, pFlag)
+end
 
 function Map.OutOfBounds(c, l)
     if c >= 1 and c <= Map.MAPSIZE and l >= 1 and l <= Map.MAPSIZE  then
@@ -54,51 +137,10 @@ function Map.Remove(c, l)
     end
 end
 
-
-function Map.isSolid(c, l)
-    local id = Map.Grid[l][c]
-    for n = 1, #Map.SolidTiles do 
-        if id == Map.SolidTiles[n] then 
-            return true
-        end
-    end
-    return false
-end
-
-function Map.isCollectible(c, l)
-    local id = Map.Grid[l][c]
-    for n = 1, #Map.Collectibles do 
-        if id == Map.Collectibles[n] then 
-            return true
-        end
-    end
-    return false
-end
-
-function Map.isChip(c, l)
-    local id = Map.Grid[l][c]
-    for n = 1, #Map.Chips do 
-        if id == Map.Chips[n] then 
-            return true
-        end
-    end
-    return false
-end
-
 function Map.isDoor(c, l)
     local id = Map.Grid[l][c]
     for n = 1, #Map.Doors do 
         if id == Map.Doors[n].id then 
-            return true
-        end
-    end
-    return false
-end
-
-function Map.isVortex(c, l)
-    local id = Map.Grid[l][c]
-    for n = 1, #Map.Vortex do 
-        if id == Map.Vortex[n] then 
             return true
         end
     end
@@ -220,6 +262,9 @@ function Map.Save()
 end
 
 function Map.load()
+    if Map.Inititalized == false then 
+        Map.Init()
+    end
     local fileName = "ChipLevel_"..Map.level..".json"
     if love.filesystem.getInfo(fileName) ~= nil then
         local file = love.filesystem.newFile(fileName)
@@ -234,7 +279,7 @@ function Map.load()
 
     for l = 1, Map.MAPSIZE do 
         for c = 1, Map.MAPSIZE do 
-            if Map.isChip(c, l) then 
+            if Map.GetFlagByPos(c, l, Map.flags.chip) then 
                 Map.TotalChips = Map.TotalChips + 1
             end
         end
