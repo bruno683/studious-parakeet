@@ -10,7 +10,7 @@ local timeToMove = 0
 local moveSpeed = 0.1
 local chipsLeft = 0
 -- Musiques et sons
-local music  = love.audio.newSource("Music/Theme.ogg", "stream")
+local music = love.audio.newSource("Music/Theme.ogg", "stream")
 local changeLevel = love.audio.newSource("Music/changeLevel.wav", "static")
 local collectChip = love.audio.newSource("Music/collectChip.wav", "static")
 local collectkey = love.audio.newSource("Music/collectkey.wav", "static")
@@ -24,6 +24,7 @@ local play = false
 function Start()
     Chip.column = 1
     Chip.line = 1
+    Chip.direction = " "
     Inventory.Clear()
     chipsLeft = map.TotalChips
 end
@@ -44,24 +45,54 @@ function Scene.update(dt)
     map.Update(dt)
     fps = math.floor(1 / dt)
     local old_column, old_line = Chip.column, Chip.line
-    -- Le booléen est vrai lorsqu'un bouton est enfoncé
-    bMove = love.keyboard.isDown("right") or love.keyboard.isDown("down") or love.keyboard.isDown("left") or love.keyboard.isDown("up")
-
-    -- Si un boutton est enfoncé et le timer est supérieur à 0 alors le timer décrémente pour stopper le mouvement
-    if bMove and timeToMove > 0 then
-        timeToMove = timeToMove - dt
+    bMove = false
+    local moveDirection = " "
+    if map.GetFlagByPos(Chip.column, Chip.line, map.flags.ice) then
+        bMove = true
+        moveDirection = Chip.direction
     end
-    
+    if map.isConveyorBelt(Chip.column, Chip.line) then
+        for k, v in pairs(map.ConveyorBelt) do
+            local idConveyor = map.getId(Chip.column, Chip.line)
+            if map.ChangeDirection(idConveyor, v.direction) then
+                bMove = true
+                moveDirection = v.direction
+
+            end
+        end
+    end
+    -- On teste le clavier afin de definir la direction
+    if moveDirection == " " then
+        if love.keyboard.isDown("right") then
+            moveDirection = "right"
+            bMove = true
+        elseif love.keyboard.isDown("down") then
+            moveDirection = "down"
+            bMove = true
+        elseif love.keyboard.isDown("left") then
+            moveDirection = "left"
+            bMove = true
+        elseif love.keyboard.isDown("up") then
+            moveDirection = "up"
+            bMove = true
+        end
+    end
+    -- Si un boutton est enfoncé et le timer est supérieur à 0 alors le timer décrémente pour stopper le mouvement
+    if bMove and timeToMove > 0 then timeToMove = timeToMove - dt end
 
     -- quand le timer est à 0 ou moins alors les mouvements sont possibles
-    if timeToMove <= 0 then 
-        if love.keyboard.isDown("right") and Chip.column < map.MAPSIZE  then 
+    if timeToMove <= 0 then
+        if moveDirection == "right" and Chip.column < map.MAPSIZE then
             Chip.column = Chip.column + 1
-        elseif love.keyboard.isDown("down") and Chip.line < map.MAPSIZE then 
+            Chip.direction = "right"
+        elseif moveDirection == "down" and Chip.line < map.MAPSIZE then
             Chip.line = Chip.line + 1
-        elseif love.keyboard.isDown("left") and Chip.column > 1 then 
+            Chip.direction = "down"
+        elseif moveDirection == "left" and Chip.column > 1 then
             Chip.column = Chip.column - 1
-        elseif love.keyboard.isDown("up") and Chip.line > 1 then 
+            Chip.direction = "left"
+        elseif moveDirection == "up" and Chip.line > 1 then
+            Chip.direction = "up"
             Chip.line = Chip.line - 1
         end
         if map.GetFlagByPos(Chip.column, Chip.line, map.flags.collectible) then
@@ -75,16 +106,17 @@ function Scene.update(dt)
             collectChip:play()
 
         end
-        if map.isDoor(Chip.column,Chip.line) then
-             for k, v in pairs(Inventory.lstItems.keys) do
+
+        if map.isDoor(Chip.column, Chip.line) then
+            for k, v in pairs(Inventory.lstItems.keys) do
                 local idDoor = map.getId(Chip.column, Chip.line)
                 if map.canOpenDoor(idDoor, v.id) then
                     openDoor:stop()
                     openDoor:play()
-                    map.Remove(Chip.column,Chip.line)
+                    map.Remove(Chip.column, Chip.line)
                     Inventory.Remove(v.id)
-                end 
-             end
+                end
+            end
         end
         if map.GetFlagByPos(Chip.column, Chip.line, map.flags.vortex) then
             map.ChangeLevel(map.level + 1, false)
@@ -98,37 +130,31 @@ function Scene.update(dt)
         timeToMove = moveSpeed
     end
     chipsLeft = map.TotalChips
-    if chipsLeft < 1 then
-        map.DestroyObject(map.DOOR)
-    end
+    if chipsLeft < 1 then map.DestroyObject(map.DOOR) end
 end
-
 
 function Scene.draw()
     map.draw()
     Inventory.Draw()
     x, y = map.MapToPixel(Chip.column, Chip.line)
     love.graphics.draw(map.imgTile, map.quads[369], x, y)
-    love.graphics.print("Current FPS: "..tostring(love.timer.getFPS( )), 10, 10)
+    love.graphics
+        .print("Current FPS: " .. tostring(love.timer.getFPS()), 10, 10)
 
-    love.graphics.print("CHIPS LEFT : "..chipsLeft, map.gridSize + 5, love.graphics.getHeight() - 40 )
+    love.graphics.print("CHIPS LEFT : " .. chipsLeft, map.gridSize + 5,
+                        love.graphics.getHeight() - 40)
 end
-
 
 function Scene.keypressed(key)
-    if key == "escape" then 
-        scene_manager.changeScene("menu")
-    end
+    if key == "escape" then scene_manager.changeScene("menu") end
 end
 
-function Scene.mousepressed(x, y, button)
-    
-end
+function Scene.mousepressed(x, y, button) end
 
 function collect(c, l)
     local id = map.getId(c, l)
     Inventory.Add(id)
-    map.Remove(c,l)
+    map.Remove(c, l)
 end
 
 return Scene
