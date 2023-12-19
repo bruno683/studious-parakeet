@@ -17,11 +17,12 @@ Map.flags = {
     vortex = 4,
     door = 5,
     ice = 6,
-    conveyorBelt = 7
+    conveyorBelt = 7,
+    bloc = 8
 }
 Map.tiles = {
-    17, 18, 19, 20, 21, 22, 23, 27, 28, 29, 30, 31, 24, 34, 37, 39, 58, 59, 60,
-    305, 306, 307, 308, 321, 322, 323, 324
+    17, 18, 19, 20, 21, 22, 23, 25, 27, 28, 29, 30, 31, 24, 34, 37, 39, 58, 59,
+    60, 305, 306, 307, 308, 321, 322, 323, 324
 }
 
 Map.level = 1
@@ -39,6 +40,11 @@ Map.ConveyorBelt = {
 }
 
 Map.TileFlags = {}
+local AnimSwitch = false
+Map.Anim = {}
+
+-- Animations du vortex
+Map.Anim[39] = {n = 1, frames = {39, 40, 41, 42}}
 
 local vortexOffset = 0
 local animTimer = 0
@@ -85,7 +91,7 @@ function Map.Init()
     Map.TileFlags[30][Map.flags.ice] = true
     Map.TileFlags[31][Map.flags.ice] = true
 
-    Map.Inititalized = true
+    -- Map.Inititalized = true
 end
 
 function Map.GetFlagById(pId, pFlag)
@@ -147,6 +153,7 @@ function Map.ChangeLevel(pLevel, bSave)
     if pLevel >= 1 then
         if bSave then Map.Save() end
         Map.level = pLevel
+        Map.load()
         if bSave == false then Map.load() end
         message("LEVEL " .. Map.level)
     end
@@ -155,11 +162,11 @@ end
 function Map.Update(dt)
     animTimer = animTimer + dt
     if animTimer >= animSpeed then
-        vortexOffset = vortexOffset + 1
-        if vortexOffset > 3 then vortexOffset = 0 end
-        animTimer = 0
+        for _, v in pairs(Map.Anim) do
+            v.n = v.n + 1
+            if v.n > #v.frames then v.n = 1 end
+        end
     end
-
 end
 
 function Map.DestroyObject(pId)
@@ -169,11 +176,9 @@ function Map.DestroyObject(pId)
             if id == pId then
                 Map.Remove(c, l)
                 openPortal:play()
-                --    openPortal:stop()
             end
         end
     end
-
 end
 
 function Map.getId(c, l)
@@ -184,12 +189,8 @@ function Map.getId(c, l)
 end
 
 function Map.loadQuads()
-
     nbTileWidth = Map.imgTile:getWidth() / 32
-    print(nbTileWidth)
     nbTileHeight = Map.imgTile:getHeight() / 32
-    print(nbTileHeight)
-
     local n = 1
     for l = 1, nbTileHeight do
         for c = 1, nbTileWidth do
@@ -250,6 +251,7 @@ function Map.load()
         print('No save(s) founded')
     end
 
+    -- Chargement des chips
     for l = 1, Map.MAPSIZE do
         for c = 1, Map.MAPSIZE do
             if Map.GetFlagByPos(c, l, Map.flags.chip) then
@@ -265,8 +267,10 @@ function Map.draw()
             local x, y = Map.MapToPixel(c, l)
             love.graphics.draw(Map.imgTile, Map.quads[33], x, y)
             local id = Map.Grid[l][c]
-            if id == Map.TILEVORTEX then id = id + vortexOffset end
             if id > 0 then
+                if Map.Anim[id] ~= nil then
+                    id = Map.Anim[id].frames[Map.Anim[id].n]
+                end
                 love.graphics.draw(Map.imgTile, Map.quads[id], x, y)
             end
 
