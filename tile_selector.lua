@@ -45,6 +45,7 @@ function TileSelector.Click(pX, pY)
 end
 
 function TileSelector.update(dt)
+    TileSelector.SetTile(Map.tiles[0])
     blinkTimer = blinkTimer + dt
     if blinkTimer > blinkDuration then
         blinkTimer = 0

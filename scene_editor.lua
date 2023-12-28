@@ -16,8 +16,9 @@ function Scene.load()
     -- chargé au lancement de l'éditeur de niveau
     message("LEVEL " .. map.level)
     local TsX = map.gridSize + 5
+    local x = TsX
     local y = 5
-    tileSelector.setPosition(TsX, y)
+    tileSelector.setPosition(x, y)
     print("Scene editor loaded")
 end
 
@@ -38,13 +39,12 @@ function changeTile(x, y, tile)
     if map.OutOfBounds(col, line) then
         -- affichage de la tuile de notre choix par action du click
         map.Grid[line][col] = tile
-        placeTile:stop()
-        placeTile:play()
+
     end
 end
 
 function Scene.update(dt)
-    -- map.Update(dt)
+    map.Update(dt)
     if blink > 0 then blink = blink - dt end
     local leftB = love.mouse.isDown(1)
     local rightB = love.mouse.isDown(2)
@@ -96,6 +96,8 @@ function Scene.mousepressed(x, y, button)
     if button == 1 then
         print("Click")
         tileSelector.Click(x, y)
+        placeTile:stop()
+        placeTile:play()
     end
     if button == 3 then
         TilePicker(x, y)

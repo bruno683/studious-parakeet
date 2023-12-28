@@ -21,48 +21,75 @@ local openPortal = love.audio.newSource("Music/openPortal.wav", "static")
 music:setLooping(true)
 local play = false
 
+-- le joueur n'est pas mort
+local isDead = false
+
 function Start()
+    map.reset()
+    map.loadQuads()
+    map.load()
+    isDead = false
     Chip.column = 1
     Chip.line = 1
     Chip.direction = " "
     Inventory.Clear()
-    chipsLeft = map.TotalChips
 end
 
 function Scene.load()
     map.level = 1
-    map.loadQuads()
-    map.load()
-    chipsLeft = map.TotalChips
+    
     Start()
     local InX = map.gridSize + 5
     local y = 5
     Inventory.setPosition(InX, y)
     music:play()
+    music:setVolume(0.05)
+end
+function removeChips(c, l, pId)
+
+    if pId == 58 or pId == 59 or pId == 60 then map.Remove(c, l) end
+
 end
 
 function Scene.update(dt)
     map.Update(dt)
     fps = math.floor(1 / dt)
+
     local old_column, old_line = Chip.column, Chip.line
     bMove = false
     local moveDirection = " "
     if map.GetFlagByPos(Chip.column, Chip.line, map.flags.ice) then
-        bMove = true
-        moveDirection = Chip.direction
+        if Inventory.Has(map.ICESKATE) == false then
+            bMove = true
+            moveDirection = Chip.direction
+        end
     end
+    if map.GetFlagByPos(Chip.column, Chip.line, map.flags.water) then
+        if Inventory.Has(map.FLIPPER) then
+            isDead = false
+        else
+            isDead = true
+        end
+    end
+
+    if map.GetFlagByPos(Chip.column, Chip.line, map.flags.thief) then
+        Thief(map.SUCTIONBOOTS)
+        Thief(map.ICESKATE)
+        Thief(map.FLIPPER)
+    end
+
     if map.isConveyorBelt(Chip.column, Chip.line) then
         for k, v in pairs(map.ConveyorBelt) do
             local idConveyor = map.getId(Chip.column, Chip.line)
-            if map.ChangeDirection(idConveyor, v.direction) then
+            if map.ChangeDirection(idConveyor, v.direction) and
+                Inventory.Has(map.SUCTIONBOOTS) == false then
                 bMove = true
                 moveDirection = v.direction
-
             end
         end
     end
     -- On teste le clavier afin de definir la direction
-    if moveDirection == " " then
+    if moveDirection == " " and isDead == false then
         if love.keyboard.isDown("right") then
             moveDirection = "right"
             bMove = true
@@ -95,20 +122,21 @@ function Scene.update(dt)
             Chip.direction = "up"
             Chip.line = Chip.line - 1
         end
+
         if map.GetFlagByPos(Chip.column, Chip.line, map.flags.collectible) then
             collect(Chip.column, Chip.line)
             collectkey:stop()
             collectkey:play()
         end
+
         if map.GetFlagByPos(Chip.column, Chip.line, map.flags.chip) then
             collect(Chip.column, Chip.line)
             collectChip:stop()
             collectChip:play()
-
         end
 
         if map.isDoor(Chip.column, Chip.line) then
-            for k, v in pairs(Inventory.lstItems.keys) do
+            for k, v in pairs(Inventory.lstItems) do
                 local idDoor = map.getId(Chip.column, Chip.line)
                 if map.canOpenDoor(idDoor, v.id) then
                     openDoor:stop()
@@ -118,11 +146,13 @@ function Scene.update(dt)
                 end
             end
         end
+
         if map.GetFlagByPos(Chip.column, Chip.line, map.flags.vortex) then
             map.ChangeLevel(map.level + 1, false)
             changeLevel:play()
             Start()
         end
+
         if map.GetFlagByPos(Chip.column, Chip.line, map.flags.solid) then
             Chip.column = old_column
             Chip.line = old_line
@@ -136,8 +166,12 @@ end
 function Scene.draw()
     map.draw()
     Inventory.Draw()
-    x, y = map.MapToPixel(Chip.column, Chip.line)
-    love.graphics.draw(map.imgTile, map.quads[369], x, y)
+    if isDead == false then
+        x, y = map.MapToPixel(Chip.column, Chip.line)
+        love.graphics.draw(map.imgTile, map.quads[369], x, y)
+    else
+        love.graphics.draw(map.imgTile, map.quads[397], x, y)
+    end
     love.graphics
         .print("Current FPS: " .. tostring(love.timer.getFPS()), 10, 10)
 
@@ -146,7 +180,11 @@ function Scene.draw()
 end
 
 function Scene.keypressed(key)
-    if key == "escape" then scene_manager.changeScene("menu") end
+    if key == "escape" then scene_manager.changeScene("menu") 
+        music:stop()
+    elseif key == "r" then 
+        Start()
+    end
 end
 
 function Scene.mousepressed(x, y, button) end
@@ -156,5 +194,12 @@ function collect(c, l)
     Inventory.Add(id)
     map.Remove(c, l)
 end
+
+function Thief(pItem) 
+    if Inventory.Has(pItem) then
+        Inventory.Remove(pItem)
+    end 
+end
+
 
 return Scene
